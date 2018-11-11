@@ -1,6 +1,4 @@
 #define DEFINE_CONSOLEV2_PROPERTIES
-#include <windows.h>
-#include <consoleapi.h>
 #include "lit.h"
 #include "type.h"
 #include "data.h"
@@ -8,11 +6,16 @@
 #include <memory.h>
 #include <stdio.h>
 #include <string.h>
-#include <io.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <conio.h>
+#include <errno.h>
 
+#ifdef MSDOS
+#include <io.h>
+#include <conio.h>
+#include <windows.h>
+#include <consoleapi.h>
+#endif
 
 pointer cmdLine;
 pointer cmdLineStart;
@@ -232,7 +235,7 @@ word dq_switch_buffer(pointer buffer_p, wpointer excep_p) {
 struct {
     FILE *fp;
     byte flags;
-    char name[_MAX_PATH];
+    char name[FILENAME_MAX];
 } _files[MAXFILES];
 
 

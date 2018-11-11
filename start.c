@@ -20,7 +20,7 @@
 #include "data.h"
 #include "proc.h"
 #include <memory.h>
-#include <io.h>
+#include <errno.h>
 #include <signal.h>
 
 
@@ -990,7 +990,7 @@ static void Parse_tail() {
 #ifndef MSDOS
     dq_special(5, "", &excep);      /* set case sensitivity */
     Echeck();
-    Convert_xenix_format()
+    Convert_xenix_format();
 #endif
         delim = ' ';
     at_eoln = _FALSE;
@@ -1465,7 +1465,7 @@ void Q_cmnd() {
     byte eflag;
     connection conn;
     word texcep;
-    char fname[_MAX_PATH];
+    char fname[FILENAME_MAX];
     byte rename_done;   /* dhj  4/24/89 */
 
     rename_done = false;        /* dhj  4/24/89 */
