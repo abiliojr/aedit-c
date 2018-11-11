@@ -16,6 +16,7 @@
 #include <windows.h>
 #include <consoleapi.h>
 #endif
+#include "oscompat.h"
 
 pointer cmdLine;
 pointer cmdLineStart;
@@ -151,7 +152,7 @@ void dq_change_extension(pointer path_p, pointer extension_p, wpointer excep_p) 
     int cnt = *path_p < 4 ? *path_p : 4;        // chars to check
     pointer s = path_p + *path_p;                 // end char;
 
-    while (cnt-- > 0 && *s != '.' && *s != '\\' && *s != '//')
+    while (cnt-- > 0 && *s != '.' && *s != '\\' && *s != '/')
         s--;
     
     if (*s != '.')
@@ -260,7 +261,7 @@ void dq_seek(connection conn, byte mode, dword offset, wpointer excep_p) {
 void dq_delete(pointer path_p, wpointer excep_p) {
     char fname[FILENAME_MAX];
     toCstr(fname, path_p);
-    *excep_p = _unlink(fname) == 0 ? 0 : errno;
+    *excep_p = unlink(fname) == 0 ? 0 : errno;
 }
 
 
