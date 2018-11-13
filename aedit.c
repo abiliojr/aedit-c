@@ -81,9 +81,9 @@ static void System_call() {
     word err;
     s_system[s_system[0] + 1] = 0;  /* convert to null terminated string */
     set_ci_mode(2);     // normal
-    Restore_quit_signal();
+    // Restore_quit_signal();
     err = system(&s_system[1]);
-    Ignore_quit_signal();
+    // Ignore_quit_signal();
     set_ci_mode(poll_mode ? 3 : 1);
     if (err && err < 256)
         Error("\x20" "unable to execute system command");

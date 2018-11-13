@@ -102,7 +102,7 @@ static void Flush() {
                 for (i = 1; i <= co_buffer[0]; i++) {
                     co_write(&co_buffer[i], 1);
                     if (delay_after_each_char != 0xffff)  /* ffff - no delay */
-                        sleep(delay_after_each_char);
+                        usleep(delay_after_each_char * 100);
                 }
             }
             else {
@@ -110,7 +110,7 @@ static void Flush() {
                 len = Min(delay_after_each_char - 0x8000, co_buffer[0] - index + 1);
                 while (len != 0) {
                     co_write(&co_buffer[index], len);
-                    sleep(1);
+                    usleep(100);
                     index = index + len;
                     len = Min(delay_after_each_char - 0x8000, co_buffer[0] - index + 1);
                 }
@@ -698,7 +698,7 @@ byte Test_file_existence(byte fnum) {
     ans = Input_yes_no_from_console("\x18" "overwrite existing file?", _FALSE, _FALSE);
     if (ans == 0 || ans == CONTROLC)
         return _TRUE;
-    return ~ans;
+    return _FALSE;
 } /* test_file_existence */
 
 

@@ -485,7 +485,7 @@ boolean Add_macro_char(byte ch) {
     if (new_macro->text + new_macro->text_length >= &macros[macro_buf_size]) {
         if (in_macro_def) {
             Error(no_more_room);
-            sleep(30000);  /* ~ 3 seconds */
+            sleep(3);
         }
         else {
             Macro_file_error(no_more_room);

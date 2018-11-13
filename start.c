@@ -992,7 +992,7 @@ static void Parse_tail() {
 
     in_invocation_line = _TRUE;
 #ifndef MSDOS
-    dq_special(5, "", &excep);      /* set case sensitivity */
+    // dq_special(5, "", &excep);      /* set case sensitivity */
     Echeck();
     Convert_xenix_format();
 #endif
@@ -1052,8 +1052,8 @@ void Alter_init() {
 #define nK_buffer_space	12
 
 #ifndef MSDOS
-    Ignore_quit_signal();
-    Handle_ioctl();
+    // Ignore_quit_signal();
+    // Handle_ioctl();
 #endif
     input_expected_flag = _FALSE;
 #ifdef MSDOS
@@ -1378,7 +1378,6 @@ static byte Keep_after_all() {
     if (ans == 1)
         return _FALSE;
     return _TRUE;
-    return ~ans;
 } /* keep_after_all */
 
 
@@ -1559,7 +1558,7 @@ void Q_cmnd() {
              /*
               * End R2 Fix, Part 1, PPR 2988
               */
-            Get_access_rights(oa.input_name);
+            // Get_access_rights(oa.input_name);
 #endif
             Init_str(tmp_str, sizeof(tmp_str));
             if (ch == 'W') {        /* OUTPUT IS SPECIFIED */
@@ -1712,7 +1711,7 @@ void Q_cmnd() {
                 /*
                  * End R2 Fix, Part 2, PPR 2988
                  */
-                Put_access_rights(files[nfile].name);
+                // Put_access_rights(files[nfile].name);
 #endif
             Add_str_str("\x11" " has been written");
             if (tmp_str[0] > string_len)

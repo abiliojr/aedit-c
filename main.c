@@ -15,6 +15,10 @@
 #include <conio.h>
 #include <windows.h>
 #include <consoleapi.h>
+#else
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #endif
 #include "oscompat.h"
 
@@ -23,37 +27,36 @@ pointer cmdLineStart;
 
 bool EnableVTMode()
 {
-    COORD ssize = { 80, 25 };
-    SMALL_RECT wsize = { 0, 0, 79, 24 };
-    CONSOLE_SCREEN_BUFFER_INFOEX consoleScreenBufferInfoEx;
-    consoleScreenBufferInfoEx.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
+//     COORD ssize = { 80, 25 };
+//     SMALL_RECT wsize = { 0, 0, 79, 24 };
+//     CONSOLE_SCREEN_BUFFER_INFOEX consoleScreenBufferInfoEx;
+//     consoleScreenBufferInfoEx.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
 
-    // Set output mode to handle virtual terminal sequences
-    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (hOut == INVALID_HANDLE_VALUE)
-    {
-        return false;
-    }
+//     // Set output mode to handle virtual terminal sequences
+//     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+//     if (hOut == INVALID_HANDLE_VALUE)
+//     {
+//         return false;
+//     }
 
 
-    DWORD dwMode = 0;
-    if (!GetConsoleMode(hOut, &dwMode))
-    {
-        return false;
-    }
+//     DWORD dwMode = 0;
+//     if (!GetConsoleMode(hOut, &dwMode))
+//     {
+//         return false;
+//     }
 
-    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
- //   dwMode &= ~ENABLE_WRAP_AT_EOL_OUTPUT;
-    if (!SetConsoleMode(hOut, dwMode))
-    {
-        return false;
-    }
+//     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+//  //   dwMode &= ~ENABLE_WRAP_AT_EOL_OUTPUT;
+//     if (!SetConsoleMode(hOut, dwMode))
+//     {
+//         return false;
+//     }
     return true;
 }
 
 void main(int argc, char **argv) {
     int len = 0;
-
     for (int i = 0; i < argc; i++)      // work out length of command line
         len += strlen(argv[i]) + 1;     // + 1 for space
     cmdLine = (pointer)malloc(len + 2); // add cr, lf and null - trailing space used for cr
@@ -67,7 +70,6 @@ void main(int argc, char **argv) {
         fprintf(stderr, "can't enable virtual terminal\n");
         exit(1);
     }
-
     Aedit();
 }
 
@@ -328,6 +330,17 @@ char *mapExtended(byte c1, byte c2) {   // ignore 0 / 0xe0 prefix
 
 }
 
+int getch(void)
+{
+    return getchar();
+}
+
+int kbhit() {
+    int bytesWaiting;
+    ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
+    return bytesWaiting;
+}
+
 word ci_read(byte *buf) {
     byte c;
     static char *escSeq = "";
@@ -339,12 +352,12 @@ word ci_read(byte *buf) {
         }
         switch (ci_mode) {
         case 3:
-            if (_kbhit() == 0)   // if key then fall through
+            if (kbhit() == 0)   // if key then fall through
                 return 0;
         case 1:
-            c = _getch(); 
+            c = getch();
             if (c == 0 || c == 0xe0) {
-                escSeq = mapExtended(c, _getch());
+                escSeq = mapExtended(c, getch());
                 continue;       // with either pick up escape sequence or retry
             }
             else
@@ -354,12 +367,6 @@ word ci_read(byte *buf) {
             return 0;
         }
     }
-}
-
-
-
-void sleep(word n) {
-    // to implement
 }
 
 byte interface_buffer[100];

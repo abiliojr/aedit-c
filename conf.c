@@ -533,6 +533,23 @@ void PCDOS_setup() {
 } /* PCDOS_setup */
 
 
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
+struct termios original_term;
+
+static void setup_stdin(void) {
+    struct termios term;
+    tcgetattr(STDIN_FILENO, &original_term);
+    term = original_term;
+    term.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+static void restore_stdin(void) {
+    tcsetattr(STDIN_FILENO, TCSANOW, &original_term);
+}
 
 void VT100_setup() {
 
@@ -563,7 +580,7 @@ void VT100_setup() {
     /* AC=T;  attributes apply to a field */
 
     first_coordinate = ANSI_RC;
-
+    setup_stdin();
 } /* VT100_setup */
 
 
@@ -620,6 +637,9 @@ void Restore_system_config() {
     if (!batch_mode) {
         Print_unconditionally_p(exit_config_list);
         Co_flush();
+#ifdef UNIX
+        restore_stdin();
+#endif
     }
 } /* restore_system_config */
 
