@@ -261,22 +261,24 @@ void Print_line(pointer line) {
     ADD_TO_MESSAGE                    ADD A STRING TO NEXT_MESSAGE.
 */
 
-static void Add_to_message(pointer addstr) {
+static void Add_to_message(char *addstr) {
 
     byte max_message_len;
     byte i;
 
-    i = addstr[0];                    /* LENGTH OF ADDITIONAL STRING    */
+    i = strlen(addstr);                    /* LENGTH OF ADDITIONAL STRING    */
     if (config == SIV)
         max_message_len = 60;
     else
         max_message_len = 80;
-    if (i + next_message[0] > max_message_len)
-        i = max_message_len - next_message[0];
+
+    ptoc(next_message);
+    if (i + strlen(next_message) > max_message_len)
+        i = max_message_len - strlen(next_message);
 
     /*    ADD THE NEW TEXT    */
-    memcpy(&next_message[next_message[0]] + 1, addstr + 1, i);
-    next_message[0] = next_message[0] + i;
+    strncat(next_message, addstr, i);
+    ctop(next_message);
 } /* add_to_message */
 
 
@@ -294,23 +296,24 @@ static void Print_message_and_stay(pointer line) {
     next_message[0] = 6;
 
     if (in_other)
-        Add_to_message("\x6" "Other ");
+        Add_to_message("Other ");
     if (oa.file_disposition == view_only)
-        Add_to_message("\x5" "View ");
+        Add_to_message("View ");
     if (oa.file_disposition == lose_file || oa.file_disposition == lost_file)
-        Add_to_message("\x8" "Forward ");
+        Add_to_message("Forward ");
     if (in_macro_def)
-        Add_to_message("\x6" "Macro ");
+        Add_to_message("Macro ");
 
 
     /*    ADD THE ACTUAL VOLITILE PART OF MESSAGE TO STRING    */
     /* create a local copy to avoid changing read only strings*/
     memcpy(msg, line, *line + 1);
-    for (i = 1; i <= msg[0]; i++) {
+    ptoc(msg);
+    for (i = 0; msg[i] != '\0'; i++) {
         msg[i] = Printable(msg[i]);
     }
     Add_to_message(msg);
-
+    ctop(msg);
     /*    USE THE NORMAL '!' CONVERTION IF LINE IS TOO LONG    */
     if (config == SIV) {
         if (next_message[0] >= 60)
