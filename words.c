@@ -619,13 +619,13 @@ void W_cmnd() {
     if ((output_codes[erase_entire_line_out_code].code[0] == 0 &&
         output_codes[erase_line_out_code].code[0] == 0)) {
 
-        Error("\x20" "insufficient terminal capability");
+        Error("insufficient terminal capability");
         return;
     }
 
     if (!window_present) {
         if (row < 5 || row > last_text_line - 2 || macro_suppress) {
-            Error("\x10" "window too small");
+            Error("window too small");
             return;
         }
 
@@ -704,6 +704,6 @@ void K_cmnd() {        /* kill the windowing */
     prompt_line = last_text_line + 2;
 
     V_cmnd();
-    Print_message (&null_str);
+    Print_message("");
 
 } /* k_cmnd */

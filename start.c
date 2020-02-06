@@ -99,7 +99,7 @@ void Subtract_eof() {
 /*                                                                        */
 /**************************************************************************/
 static void Print_name(pointer name_p) {
-    Print_message(name_p);
+    Print_message_p(name_p);
     Co_flush();
 } /* print_name */
 
@@ -294,7 +294,7 @@ static void Read_input_file() {
     /*    MAY HAVE TO WARN ABOUT FILE TOO BIG IF IN OTHER FILE */
 
         if ((oa.file_disposition == lose_file) && (oa.more_input)) {
-            Error("\x11" "text does not fit");
+            Error("text does not fit");
             excep = 1;                        /* PRESERVES MESSAGE */
             oa.file_disposition = lost_file;
         }
@@ -414,7 +414,7 @@ static void Start_error(pointer msg) {
     if (in_invocation_line)
         Early_error(str); /* fatal error - doesn't return */
     else
-        Error(str);       /* non fatal error - returns    */
+        Error(ptoc(str));       /* non fatal error - returns    */
 } /* start_error */
 
 
@@ -1285,7 +1285,7 @@ static void Display_filenames() {
     save_force_writing = force_writing;
     force_writing = _TRUE;
     if (oa.input_name[0] == 0) {
-        Print_message("\xd" "no input file");
+        Print_message("no input file");
     }
     else {
         Init_str(tmp_str, sizeof(tmp_str));
@@ -1299,7 +1299,7 @@ static void Display_filenames() {
             Add_str_str("\x4" " to ");
             Add_str_str(oa.output_name);
         }
-        Print_message(tmp_str);
+        Print_message(ptoc(tmp_str));
     }
     force_writing = save_force_writing;
 
@@ -1704,10 +1704,10 @@ void Q_cmnd() {
                 }
                 oa.file_disposition = keep_file; /* Dont print 'View,Forward' */
                 in_other = _FALSE;            /* DONT PRINT 'Other ' */
-                Print_message(input_buffer);
+                Print_message_p(input_buffer);
                 Quit_exit(0);
             }
-            Print_message(input_buffer);
+            Print_message_p(input_buffer);
 
         }
         else if (ch == 'A' || ch == 'I') {

@@ -24,8 +24,8 @@
 
 
 byte current_message[81] = { 0 }; /* CONTENTS OF MESSAGE LINE */
-byte last_message[81] = { 0 };
-byte next_message[81] = { "\x6" " -!!- " }; /* NEXT MESSAGE LINE*/
+byte last_message[81] = {0};
+byte next_message[81] = " -!!- "; /* NEXT MESSAGE LINE*/
 
 byte current_prompt[81] = { 0 }; /* CONTENTS OF PROMPT LINE*/
 byte suppressed_prompt[81] = { 0 };
@@ -272,13 +272,11 @@ static void Add_to_message(char *addstr) {
     else
         max_message_len = 80;
 
-    ptoc(next_message);
     if (i + strlen(next_message) > max_message_len)
         i = max_message_len - strlen(next_message);
 
     /*    ADD THE NEW TEXT    */
     strncat(next_message, addstr, i);
-    ctop(next_message);
 } /* add_to_message */
 
 
@@ -293,7 +291,7 @@ static void Print_message_and_stay(pointer line) {
         return;
 
     /* CHOP NEXT_MESSAGE BACK TO ' ---- ' WHICH IS ALWAYS PRESENT */
-    next_message[0] = 6;
+    next_message[6] = '\0';
 
     if (in_other)
         Add_to_message("Other ");
@@ -307,35 +305,38 @@ static void Print_message_and_stay(pointer line) {
 
     /*    ADD THE ACTUAL VOLITILE PART OF MESSAGE TO STRING    */
     /* create a local copy to avoid changing read only strings*/
-    memcpy(msg, line, *line + 1);
-    ptoc(msg);
+    strcpy(msg, line);
     for (i = 0; msg[i] != '\0'; i++) {
         msg[i] = Printable(msg[i]);
     }
     Add_to_message(msg);
-    ctop(msg);
+
     /*    USE THE NORMAL '!' CONVERTION IF LINE IS TOO LONG    */
     if (config == SIV) {
-        if (next_message[0] >= 60)
-            next_message[60] = '!';
-    }
-    else {
-        if (next_message[0] >= 80)
-            next_message[80] = '!';
+        if (strlen(next_message) >= 60) {
+            next_message[59] = '!';
+            next_message[60] = '\0';
+        }
+    } else {
+        if (strlen(next_message) >= 80) {
+            next_message[79] = '!';
+            next_message[80] = '\0';
+        }
     }
 
     if (batch_mode) {
         if (line[0] > 5) { /* don't print COUNT while in batch mode */
             Co_flush();
-            Print_unconditionally_p(next_message);
+            Print_unconditionally(next_message);
             Print_unconditionally_crlf();
         }
-    }
-    else {
+    } else {
+        ctop(next_message);
         Rebuild(message_line, next_message, current_message);
-        Move_name(msg, last_message);
+        ptoc(next_message);
+        strcpy(last_message, msg);
     }
-    Move_name(next_message, current_message);
+    strcpy(current_message, next_message);
     Assign_to_message_is(dirty_message);    /* MESSAGE HAS A REAL MESSAGE */
 } /* print_message_and_stay */
 
@@ -345,18 +346,16 @@ static void Print_message_and_stay(pointer line) {
 /* PRINTS THE COUNT THAT IS IN INPUT_BUFFER ON THE MESSAGE LINE. */
 
 void Print_count_message() {
+    ptoc(input_buffer);
     Print_message_and_stay(input_buffer);
+    ctop(input_buffer);
     Assign_to_message_is(count_message);
     /* kill count_message after scrolling */
-    last_message[0] = 0;
+    last_message[0] = '\0';
 
 } /* print_count_message */
 
-
-
-
-/*   PRINT MESSAGE LINE AND RESTORE CURSOR */
-void Print_message(pointer line) {
+void Print_message(char *line) {
     byte old_row, old_col;
 
     old_col = col;
@@ -367,11 +366,16 @@ void Print_message(pointer line) {
     }
 } /* print_message */
 
+void Print_message_p(pointer line) {
+    line = ptocC(line, 200);
+    Print_message(line);
+}
+
 
 error_struct_t error_status = { _FALSE, _FALSE, _FALSE };      // see type.h for description
 
 
-void Error(pointer msg_p) {
+void Error(char *msg) {
 
     byte delay;
     byte i;
@@ -380,13 +384,13 @@ void Error(pointer msg_p) {
     save_force_writing = force_writing;
     force_writing = _TRUE;
     if (batch_mode) {
-        Print_message(msg_p);
+        Print_message(msg);
         error_status.key_was_space = _TRUE; /*always continue */
     }
     else if (error_status.in_invocation) {
         /* non-fatal errors on invocation may appear before the
            configuration is known, so use the normal UDI dq$write. */
-        Print_unconditionally_p(msg_p);
+        Print_unconditionally(msg);
         Print_unconditionally_crlf();
         Print_unconditionally("hit space to continue");
         Print_unconditionally_crlf();
@@ -397,7 +401,7 @@ void Error(pointer msg_p) {
     else {
         if (macro_suppress)  /* make row and col valid */
             Put_home();
-        Print_message(msg_p);
+        Print_message(msg);
         AeditBeep();
         Co_flush();
         if (macro_exec_level != 0)
@@ -446,7 +450,7 @@ void Early_error(pointer msg) {
 */
 
 void Illegal_command() {
-    Error("\xf" "illegal command");
+    Error("illegal command");
 } /* illegal_command */
 
 
@@ -609,7 +613,6 @@ void Print_prompt_and_repos(pointer line) {
   Only called if window_present=false.
 ****************************************************************/
 void Print_last_prompt_and_msg(boolean small_prompt) {
-
     Print_message(last_message);
     if (in_input_line) {
         Print_input_line();

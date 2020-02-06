@@ -12,6 +12,7 @@
 #include "type.h"
 #include "data.h"
 #include "proc.h"
+#include "oscompat.h"
 
 
 static void xx_controlc();
@@ -22,9 +23,9 @@ static void Do_delete_right();
 static void U_restore();
 static void Xx_rubout();
 
-byte invalid_hex[] = { "\x11" "invalid hex value" };
+byte invalid_hex[] = "invalid hex value";
 
-byte illegal_value[] = { "\xd" "illegal value" };
+byte illegal_value[] = "\xd" "illegal value";
 
 
 byte have_slash;        /* USED BY /I COMMAND */
@@ -726,7 +727,7 @@ void Delete_cmnd() {
         return;
 
     if (infinite || count > 32) {
-        Error("\x1a" "cannot delete more than 32");
+        Error("cannot delete more than 32");
         return;
     }
     Set_dirty();
@@ -957,7 +958,7 @@ void H_cmnd() {
                 }
                 //        exit_loop:
                 force_writing = _TRUE;
-                Print_message(tmp_str);
+                Print_message(ptoc(tmp_str));
                 force_writing = _FALSE;
                 num_output = num_output - len;
                 if (num_output != 0) {
@@ -1206,7 +1207,7 @@ void J_cmnd() {
             Jump_end();
         }
         else if (ch >= 'A' && ch <= 'D') {
-            if (oa.tblock[ch - '@'] > oa.wk1_blocks + oa.wk2_blocks + 1) Error("\xb" "no such tag");
+            if (oa.tblock[ch - '@'] > oa.wk1_blocks + oa.wk2_blocks + 1) Error("no such tag");
             else Jump_tag(ch - '@');          /* TAG A IS 1, B IS 2 ETC */
         }
         else if (ch == 'L') {        /* WANT ABSOLUTE LINE NUMBER */
@@ -1278,7 +1279,7 @@ nestedProc void Exchange_a_char(byte ch, boolean string_input) {
     pointer saver;
 
     if (xbuf_index == xbuf_size) {
-        Error("\x14" "xchange limit is 100");
+        Error("xchange limit is 100");
     }
     else {
         if (high_s_byte != CR && high_s_byte != LF && oa.high_s + 1 < oa.high_e) {

@@ -12,6 +12,7 @@
 #include "type.h"
 #include "data.h"
 #include "proc.h"
+#include "oscompat.h"
 
 static void Do_replace(byte need_save);
 
@@ -45,7 +46,7 @@ static void Print_counters() {
             Add_str_num(cnt_rep, 10);
         }
         force_writing = _TRUE;
-        Print_message(tmp_str);
+        Print_message(ptoc(tmp_str));
         force_writing = _FALSE;
     }
 

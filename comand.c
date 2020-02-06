@@ -201,7 +201,7 @@ byte Get_hexin(byte *err_p) {
     ;
     /*BEGIN*/
     num = 0;
-    Print_message("\x5" "<HEX>");
+    Print_message("<HEX>");
     for (i = 1; i <= 2; i++) {
         ch = Cmd_ci();
         if (ch == CONTROLC) {
@@ -981,8 +981,8 @@ static byte Input_l(pointer prompt_p, pointer prev_string_p) {
     if (input_buffer[0] == 0)
         edit_stat.reediting = _TRUE;
     if (!edit_stat.reediting)
-        Print_message(ed_mess);
-    else Print_message(&null_str);
+        Print_message_p(ed_mess);
+    else Print_message("");
 
     edit_stat.last_cursor_key = 0; /* 0 = undefined */
     in_input_line = _TRUE;

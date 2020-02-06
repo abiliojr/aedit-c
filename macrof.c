@@ -39,9 +39,9 @@ logical check_for_run_keys = { _TRUE };
 
 /* Re-Used Strings */
 
-byte bad_command[] = { "\xb" "bad command" };
-byte bad_hex_value[] = {"\xd" "bad hex value" };
-byte no_such_macro[] = { "\xd" "no such macro" };
+byte bad_command[] = "bad command";
+byte bad_hex_value[] = "bad hex value";
+byte no_such_macro[] = "no such macro";
 
 /*    LOCALS USED DURING MACROFILE PROCESSING    */
 
@@ -113,8 +113,8 @@ dispatch_t m_dispatch[8] = {
     'S', Macro_save,
     0, 0 };
 
-byte no_more_room[] = { "\x17" "no more room for macros" };
-byte create_while_exec[] = { "\x37" "macro redefinition is forbidden while executing a macro" };
+byte no_more_room[] = "no more room for macros";
+byte create_while_exec[] = "macro redefinition is forbidden while executing a macro";
 
 
 byte state = { 0 };
@@ -129,7 +129,7 @@ boolean do_print_banner;
 /* ADDS 'error in nnn ' TO START OF ERROR MESSAGE AND THEN PRINTS IT.
    ALL ERRORS DETECTED DURING MACROFILE PROCESSING ARE PRINTED THIS WAY. */
 
-void Macro_file_error(pointer string) {
+void Macro_file_error(char *string) {
     pointer prev_char_ptr;
     byte ch;
     byte macro_error_string[81];
@@ -141,7 +141,7 @@ void Macro_file_error(pointer string) {
     Add_str_str(string);
 
     error_status.from_macro_file = _TRUE;
-    Error(macro_error_string);
+    Error(ptoc(macro_error_string));
     error_status.from_macro_file = _FALSE;
     if (!error_status.key_was_space) {
         macro_fail = _TRUE;
@@ -157,16 +157,12 @@ void Macro_file_error(pointer string) {
 
 } /* macro_file_error */
 
-
-
-
-
-byte bad_msg[] = { "\x0c" "bad __ value" };
+byte bad_msg[] = "bad __ value" ;
 
 static void Bad_value(pointer p) {
 
-    bad_msg[5] = p[0];
-    bad_msg[6] = p[1];
+    bad_msg[4] = p[0];
+    bad_msg[5] = p[1];
     Macro_file_error(bad_msg);
 } /* bad_value */
 
@@ -245,7 +241,7 @@ static void Process_macro_comment() {
             return;
         ch = ch2;
         if (macro_fail) {
-            Macro_file_error("\xc" "missing '*\\'");
+            Macro_file_error("missing '*\\'");
             return;
         }
     }
@@ -317,7 +313,7 @@ next_macro_char:
             case CHAR2('E', 'M'): found_em = 1; return 0;   // end of macro definition
             case CHAR2('M', 'M'): found_em = _TRUE; return 0;   // end of modeless macro definition
             }
-            Macro_file_error("\xc" "bad '\\' code");
+            Macro_file_error("bad '\\' code");
             macro_fail = _TRUE;
             ch = 0xff;
         }
@@ -363,7 +359,7 @@ static byte Not_equal() {
     ch = Macro_not_blank();
     if (ch == '=')
         return _FALSE;
-    Macro_file_error("\xb" "missing '='");
+    Macro_file_error("missing '='");
     return _TRUE;
 } /* not_equal */
 
@@ -380,7 +376,7 @@ static byte Not_semi_colon() {
     ch = Macro_not_blank();
     if (ch == ';')
         return _FALSE;
-    Macro_file_error("xb" "missing ';'");
+    Macro_file_error("missing ';'");
     return _TRUE;
 } /* not_semi_colon */
 
@@ -778,7 +774,7 @@ next_macro_line:
                     /*    MATCHES NOTHING - MUST BE ERROR. PRINT MESSAGE
                         AND KEEP GOING    */
 
-                    Macro_file_error("\xb" "bad AF type");
+                    Macro_file_error("bad AF type");
                     break;
                 }
                 break;
@@ -914,7 +910,7 @@ next_macro_line:
                 ch = Upper(Macro_char());
             }
             if (ch != esc_code || input_buffer[0] == 0) {
-                Macro_file_error("\xd" "no macro name");
+                Macro_file_error("no macro name");
                 break;
             }
 
@@ -1006,7 +1002,7 @@ static void Macro_add_level() {
         return;
 
     if (macro_exec_level == last(macro_exec_pointer)) {
-        Error("\x16" "macro nesting too deep");
+        Error("macro nesting too deep");
         macro_exec_level = 0;        /* KILL ALL MACROS    */
         Rebuild_screen();
         return;
@@ -1021,7 +1017,7 @@ static void Macro_add_level() {
     next_char_is_escape = (temp->text[temp->text_length - 1] == 0xff);
     last_main_cmd = Upper(last_main_cmd);
     if (next_char_is_escape && last_main_cmd == 'B') {
-        Error("\x2E" "modeless macros not supported in Block command");
+        Error("modeless macros not supported in Block command");
         macro_exec_level = 0;        /* KILL ALL MACROS    */
         Rebuild_screen();
         return;
@@ -1088,7 +1084,7 @@ void Handle_macro_exec_code() {
 
     byte ch;
 
-    Print_message("\x7" "<MEXEC>");
+    Print_message("<MEXEC>");
     ch = Upper(Cmd_ci());
     Clear_message();
     if (!Single_char_macro(ch))
@@ -1412,7 +1408,7 @@ static void Macro_list() {
     while (macro_at < macro_end) {
         if (tmp_str[0] + macro_name_length >= message_len && tmp_str[0] != 9) {
             /* 9 is the length of macros_str */
-            Print_message(tmp_str);
+            Print_message(ptoc(tmp_str));
             if (Hit_space() != ' ') {
                 force_writing = _FALSE;
                 return;
@@ -1425,7 +1421,7 @@ static void Macro_list() {
         macro_at += macro_name_length + sizeof(byte);
         macro_at += macro_text_length + sizeof(word);
     }
-    Print_message(tmp_str);
+    Print_message(ptoc(tmp_str));
     if (macro_exec_level != 0)
         Co_flush();
     force_writing = _FALSE;

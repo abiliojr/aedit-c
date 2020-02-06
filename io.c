@@ -580,7 +580,7 @@ byte Ci() {
                 continue;
 #else
             if (numin == 0) {
-                Error("\xd" "premature EOF");
+                Error("premature EOF");
                 Quit_exit(5);
             }
 #endif
@@ -623,6 +623,7 @@ void Echeck() {
         Add_str_char(' ');
         dq_decode_exception(excep, err_buf, 60);
         Add_str_str(err_buf);
+        ptoc(tmp_str);
         Error(tmp_str);
         excep = eexcep;
     }
@@ -637,6 +638,7 @@ void Echeck_no_file() {
 
     if (excep != 0) {
         dq_decode_exception(excep, err_buf, 80);
+        ptoc(err_buf);
         Error(err_buf);
     }
 } /* echeck_no_file */
@@ -869,7 +871,7 @@ static void Write_wk2(pointer start) {
 
 static void Text_lost() {
     if (oa.file_disposition == lose_file)
-        Error("\xe" "some text lost");
+        Error("some text lost");
     oa.file_disposition = lost_file;
 } /* text_lost */
 

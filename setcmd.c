@@ -11,6 +11,7 @@
 #include "type.h"
 #include "data.h"
 #include "proc.h"
+#include "oscompat.h"
 #include <memory.h>
 
 static void Set_autocr();
@@ -66,7 +67,7 @@ pointer set_prompts[] = { "\x4f" RVID "Autonl    Bak_file  Case      Display  "
 
 boolean err;
 
-byte illegal_set_command[] = { "\x13" "illegal set command" };
+byte illegal_set_command[] = "illegal set command";
 
 
 /*    THE FOLLOWING SET I/O ROUTINES OBTAIN INPUT FROM THE CONSOLE
@@ -77,7 +78,7 @@ byte illegal_set_command[] = { "\x13" "illegal set command" };
         set_error                PRINT REGULAR OR MACRO FILE MESSAGE
     */
 
-static void Set_error(pointer msg) {
+static void Set_error(char *msg) {
 
     if (set_from_macrofile) {
         Macro_file_error(msg);
@@ -319,7 +320,7 @@ static void Set_leftcol() {
     }
 
     if (!Skip_char(CR) || err || (left > 175)) {
-        Set_error("\xb" "bad Leftcol");
+        Set_error("bad Leftcol");
         Stop_macro();
     }
     else {
@@ -380,7 +381,7 @@ static void Set_margin() {
     }
 
     if (err1) {
-        Set_error("\xb" "bad margins");
+        Set_error("bad margins");
         return;
     }
 
@@ -405,7 +406,7 @@ static void Set_margin() {
         Add_str_str("\x9" " margin: ");
 #pragma warning(disable:6001)
         Add_str_num(num, 10);
-        Set_error(tmp_str);
+        Set_error(ptoc(tmp_str));
     }
     else {
         indent_margin = (byte)indent;
@@ -457,7 +458,7 @@ static void Set_radix() {
             Init_str(tmp_str, sizeof(tmp_str));
             Add_str_str("\xf" "Current radix: ");
             Add_str_str(&strings[Find_index(radix, radices) * 8]);
-            Print_message(tmp_str);
+            Print_message(ptoc(tmp_str));
             ch = Input_command(set_radix_prompt);
             if ((ch == CONTROLC) || (ch == esc_code) || (ch == CR)) {
                 command = 0; /* if command=CR, the last prompt is freezed */
@@ -469,7 +470,7 @@ static void Set_radix() {
             radix = radices[ch2 + 1];
             return;
         }
-        Set_error("\xd" "illegal radix");
+        Set_error("illegal radix");
     }
 } /* set_radix */
 
@@ -555,7 +556,7 @@ static void Set_tabs() {
     while (!Skip_char(CR)) {
         nexttab = Num_in(&err);
         if ((nexttab <= lasttab) || (nexttab > 253) || err) {
-            Set_error("\x8" "bad tabs");
+            Set_error("bad tabs");
             return;
         }
         lasttab = nexttab;
@@ -608,7 +609,7 @@ static void Set_viewrow() {
     temp = (byte)Num_in(&err);
     if ((temp > last_text_line && temp > window.last_text_line) || err || !Skip_char(CR)) {
         /* 0, last_text_line, and window.last_text_line were forbidden. IB */
-        Set_error("\xe" "bad View row");
+        Set_error("bad View row");
     }
     else {
         center_line = temp;

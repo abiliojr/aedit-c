@@ -56,7 +56,7 @@ static void System_call() {
 
 #ifdef MSDOS
     if (!dos_system) {
-        Error("\x1c" "System command not supported");
+        Error("System command not supported");
         return;
     }
 #endif
@@ -73,7 +73,7 @@ static void System_call() {
 #ifdef MSDOS
     s_system[s_system[0] + 1] = 0;  /* Convert to null terminated string */
     if (system(&s_system[1]) != 0)  /* for dos */
-        Error("\x20" "unable to execute System command");
+        Error("unable to execute System command");
     excep = signal(SIGINT, Cc_trap) == SIG_ERR ? errno : 0; /* MUST TRAP CONTROL C AGAIN */
     Echeck();
 #else // Unix
@@ -85,7 +85,7 @@ static void System_call() {
     Ignore_quit_signal();
     set_ci_mode(poll_mode ? 3 : 1);
     if (err && err < 256)
-        Error("\x20" "unable to execute system command");
+        Error("unable to execute system command");
 #endif
         Put_scroll_region(first_text_line, last_text_line);
         save_input_expected = input_expected_flag;

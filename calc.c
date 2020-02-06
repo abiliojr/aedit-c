@@ -12,6 +12,7 @@
 #include "type.h"
 #include "data.h"
 #include "proc.h"
+#include "oscompat.h"
 
 static pointer Get_string_variable(byte ch);
 static dword N_stat_in_parens();
@@ -21,7 +22,7 @@ static byte ff = 0xff;      // used to allow address to be taken
 const int nbits = sizeof(dword) * 8;
 const dword signBit = 1 << (sizeof(dword) * 8 - 1);
 
-byte invalid_name[] = { "\x15" "invalid variable name" };
+byte invalid_name[] = "invalid variable name";
 
 
 
@@ -75,7 +76,7 @@ pointer Get_s_var() {
 
     byte ch;
 
-    Print_message("\x6" "<FETS>");
+    Print_message("<FETS>");
     ch = Upper(Cmd_ci());
     Clear_message();
     if (ch == CONTROLC)
@@ -97,7 +98,7 @@ static pointer Get_string_variable(byte ch) {
         if (in_block_buffer > string_len) {
             /* block_buffer contains too many chars,
                or the block is written to file */
-            Error("\x1d" "block buffer too large for SB");
+            Error("block buffer too large for SB");
             string_error = _TRUE;
             return &null_str;
         }
@@ -159,7 +160,7 @@ pointer Get_n_var(byte radix, boolean add_minus) {
     address p;
     dword dtemp;
 
-    Print_message("\x6" "<FETN>");
+    Print_message("<FETN>");
     ch = Cmd_ci();
     Clear_message();
     if (ch >= '0' && ch <= '9') {
@@ -573,27 +574,27 @@ static dword System_variable() {
 
 
 /* CALC ERROR MESSAGES */
-byte err_illegal_expo[] = { "\x1d" "illegal exponential operation" };
-byte err_unbalanced[] = { "\x16" "unbalanced parenthesis" };
-byte err_too_complex[] = { "\x16" "expression too complex" };
-byte err_div_by_zero[] = { "\x14" "divide by zero error" };
-byte err_illegal[] = { "\x12" "illegal expression" };
-byte err_mod_by_zero[] = { "\x11" "mod by zero error" };
-byte err_unrecognized[] = { "\x17" "unrecognized identifier" };
-byte err_illegal_num[] = { "\x18" "invalid numeric constant" };
-byte err_num_too_long[] = { "\x1a" "numeric constant too large" };
-byte err_invalid_base[] = { "\x16" "invalid base character" };
-byte err_no_float[] = { "\x1a" "floating point not allowed" };
-byte err_long_string[] = { "\x12" "string is too long" };
-byte err_read_only[] = { "\x20" "assignment to read only variable" };
+byte err_illegal_expo[] = "illegal exponential operation";
+byte err_unbalanced[] = "unbalanced parenthesis";
+byte err_too_complex[] = "expression too complex";
+byte err_div_by_zero[] = "divide by zero error";
+byte err_illegal[] = "illegal expression";
+byte err_mod_by_zero[] = "mod by zero error";
+byte err_unrecognized[] = "unrecognized identifier";
+byte err_illegal_num[] = "invalid numeric constant";
+byte err_num_too_long[] = "numeric constant too large";
+byte err_invalid_base[] = "invalid base character";
+byte err_no_float[] = "floating point not allowed";
+byte err_long_string[] = "string is too long";
+byte err_read_only[] = "assignment to read only variable";
 
 
 /*************************************************************************
 Is called for calc errors. Prints an error message, and returns to
 the module level (the compiler cleans up the stack).
 *************************************************************************/
-static void Calc_error(pointer err_msg) {
-
+static void Calc_error(char *err_msg) {
+    err_msg = ctopC(err_msg, 200);
     byte len, len1;
 
     Init_str(tmp_str, sizeof(tmp_str));
@@ -608,6 +609,7 @@ static void Calc_error(pointer err_msg) {
     if (len1 > 10) len1 = 10;
     input_buffer[len - len1] = len1;
     Add_str_str(&input_buffer[len - len1]);
+    ptoc(tmp_str);
     Error(tmp_str);
     longjmp(aedit_entry, 1);
 
@@ -1019,7 +1021,7 @@ static pointer Get_quoted_string() {
         tok_ptr++;
     }
     if (tok_ptr > limit)
-        Calc_error("\x19" "missing string terminator"); /* does not return */
+        Calc_error("missing string terminator"); /* does not return */
     tmp_str[0] = (byte)(tok_ptr - start);
     memcpy(&tmp_str[1], start, tmp_str[0]);
     tok_ptr++;
@@ -1526,7 +1528,7 @@ void C_cmnd() {
         Add_str_special(result_ptr);
     }
     force_writing = (force == 2); /* 2 - print */
-    Print_message(tmp_str);
+    Print_message(ptoc(tmp_str));
     if (macro_exec_level != 0) Co_flush();
     force_writing = _FALSE;
 

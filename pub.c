@@ -343,6 +343,6 @@ END OF COMMENT */
    word delay_after_each_char = {0};
      /* delay after each char. */
 
-   byte invalid_null_name[] = {"\x11" "invalid null name"};
+   byte invalid_null_name[] = "invalid null name";
 
 

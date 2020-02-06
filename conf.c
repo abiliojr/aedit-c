@@ -312,7 +312,7 @@ void Insert_long_config(pointer new_str_p, entry_t *entry_p) {
     }
     else {
         entry_p->len = 0;
-        Macro_file_error("\x1d" "too many long config commands");
+        Macro_file_error("too many long config commands");
     }
 
 } /* insert_long_config */

@@ -105,8 +105,9 @@ void Text_co(byte ch);
 void Print_line(pointer line);
 static void Print_message_and_stay(pointer line);
 void Print_count_message();
-void Print_message(pointer line);
-void Error(pointer msg_p);
+void Print_message(char *line);
+void Print_message_p(pointer line);
+void Error(char *msg);
 void Early_error(pointer msg);
 void Illegal_command();
 void Kill_message();
@@ -161,7 +162,7 @@ byte Have_controlc();
 void Working();
 
 /*****     MACROF.PLM     *****/
-void Macro_file_error(pointer string);
+void Macro_file_error(char *string);
 byte Macro_byte();
 static byte Macro_not_blank();
 boolean Add_macro_char(byte ch);
