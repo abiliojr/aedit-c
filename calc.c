@@ -594,25 +594,23 @@ Is called for calc errors. Prints an error message, and returns to
 the module level (the compiler cleans up the stack).
 *************************************************************************/
 static void Calc_error(char *err_msg) {
-    err_msg = ctopC(err_msg, 200);
-    byte len, len1;
+    byte len;
 
-    Init_str(tmp_str, sizeof(tmp_str));
-    Add_str_str(err_msg);
-    Add_str_str("\x4" "    ");
-    while (tok_ptr <= input_buffer + input_buffer[0] &&
-        (Char_type(tok_ptr[0]) == ch_letter || Char_type(tok_ptr[0]) == ch_number)) {
+    ptoc(input_buffer);
+    tok_ptr--; // adjust for the ptoc, #TODO: remove
+
+    while (*tok_ptr && (Char_type(*tok_ptr) == ch_letter || Char_type(*tok_ptr) == ch_number)) {
         tok_ptr++;
     }
-    tok_ptr[0] = '#';
-    len = len1 = (byte)(tok_ptr - input_buffer);
-    if (len1 > 10) len1 = 10;
-    input_buffer[len - len1] = len1;
-    Add_str_str(&input_buffer[len - len1]);
-    ptoc(tmp_str);
+
+    *tok_ptr = '\0';
+
+    len = (byte)(tok_ptr - input_buffer);
+    if (len > 9) len = 9;
+
+    snprintf(tmp_str, sizeof(tmp_str), "%s    %s#", err_msg, tok_ptr - len);
     Error(tmp_str);
     longjmp(aedit_entry, 1);
-
 } /* calc_error */
 
 
