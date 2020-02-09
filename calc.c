@@ -319,57 +319,57 @@ static byte Char_subtype(byte ch) {
     return (byte)(char_type_tbl[ch] >> 4);
 }
 
-struct { byte len, name[6]; } variables[50] = {
-        3, "COL   ",
-        3, "ROW   ",
-        6, "LSTFND",
-        6, "INOTHR",
-        5, "ISDEL ",
-        6, "ISWHTE",
-        5, "CURCH ",
-        4, "UPCH  ",
-        5, "LOWCH ",
-        5, "CURWD ",
-        5, "NXTCH ",
-        5, "NXTWD ",
-        6, "CURPOS",
-        4, "TAGA  ",
-        4, "TAGB  ",
-        4, "TAGC  ",
-        4, "TAGD  ",
-        3, "EOF   ",
-        3, "BOF   ",
-        4, "DATE  ",
-        4, "TIME  ",
-        6, "IMARGN",
-        6, "LMARGN",
-        6, "RMARGN",
-        6, "NSTLVL",
-        6, "CNTFND",
-        6, "CNTREP",
-        6, "CNTMAC",
-        6, "CNTEXE",
-        6, "NXTTAB",
-        3, "SL0   ",
-        3, "SL1   ",
-        3, "SL2   ",
-        3, "SL3   ",
-        3, "SL4   ",
-        3, "SL5   ",
-        3, "SL6   ",
-        3, "SL7   ",
-        3, "SL8   ",
-        3, "SL9   ",
-        3, "SLB   ",
-        3, "SLI   ",
-        3, "SLO   ",
-        3, "SLW   ",
-        3, "SLG   ",
-        3, "SLP   ",
-        3, "SLM   ",
-        3, "SLT   ",
-        3, "SLR   ",
-        3, "SLE   "
+unsigned char variables[][6] = {
+    "COL",
+    "ROW",
+    "LSTFND",
+    "INOTHR",
+    "ISDEL",
+    "ISWHTE",
+    "CURCH",
+    "UPCH",
+    "LOWCH",
+    "CURWD",
+    "NXTCH",
+    "NXTWD",
+    "CURPOS",
+    "TAGA",
+    "TAGB",
+    "TAGC",
+    "TAGD",
+    "EOF",
+    "BOF",
+    "DATE",
+    "TIME",
+    "IMARGN",
+    "LMARGN",
+    "RMARGN",
+    "NSTLVL",
+    "CNTFND",
+    "CNTREP",
+    "CNTMAC",
+    "CNTEXE",
+    "NXTTAB",
+    "SL0",
+    "SL1",
+    "SL2",
+    "SL3",
+    "SL4",
+    "SL5",
+    "SL6",
+    "SL7",
+    "SL8",
+    "SL9",
+    "SLB",
+    "SLI",
+    "SLO",
+    "SLW",
+    "SLG",
+    "SLP",
+    "SLM",
+    "SLT",
+    "SLR",
+    "SLE"
 };
 
 
@@ -466,14 +466,9 @@ static byte Real_pos() {
 
 
 static boolean Is_a_system_variable() {
-    wpointer ac;
-
     for (var_index = 0; var_index <= last(variables); var_index++) {
-        ac = (wpointer)variables[var_index].name;
-        if (*(wpointer)tok_ptr == *ac) { /* fast check */
-            if (cmpb(tok_ptr, (pointer)ac, variables[var_index].len) == 0xffff)
-                return _TRUE;
-        }
+        char *ac = variables[var_index];
+        if (strncmp(tok_ptr, ac, strlen(ac)) == 0) return _TRUE;
     }
     return _FALSE;
 } /* is_a_system_variable */
@@ -484,7 +479,7 @@ static boolean Is_a_system_variable() {
 static dword System_variable() {
     byte c, i;
 
-    tok_ptr = tok_ptr + variables[var_index].len;
+    tok_ptr = tok_ptr + strlen(variables[var_index]);
     switch (var_index) {
     case 0: return Real_pos();  /* COL */
     case 1: /* ROW */
