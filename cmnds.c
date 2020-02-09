@@ -937,7 +937,7 @@ void H_cmnd() {
             cursor = oa.high_s;
             while (num_output != 0) {
                 len = Min(10, num_output);
-                Init_str(tmp_str, sizeof(tmp_str));
+                Init_str_c(tmp_str, sizeof(tmp_str));
                 Add_str_str_c("Hex: ");
                 for (i = 1; i <= len; i++, cursor++) {
                     ch = *cursor;

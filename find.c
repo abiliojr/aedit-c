@@ -38,15 +38,15 @@ boolean ignore_failure;
 static void Print_counters() {
 
     if (!In_macro_exec()) {
-        Init_str(tmp_str, sizeof(tmp_str));
-        Add_str_str("\xb" "    found: ");
-        Add_str_num(cnt_fnd, 10);
+        Init_str_c(tmp_str, sizeof(tmp_str));
+        Add_str_str_c("    found: ");
+        Add_str_num_c(cnt_fnd, 10);
         if (command != 'F') { /* R or ? */
-            Add_str_str("\xe" "    replaced: ");
-            Add_str_num(cnt_rep, 10);
+            Add_str_str_c("    replaced: ");
+            Add_str_num_c(cnt_rep, 10);
         }
         force_writing = _TRUE;
-        Print_message(ptoc(tmp_str));
+        Print_message(tmp_str);
         force_writing = _FALSE;
     }
 

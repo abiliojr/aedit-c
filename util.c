@@ -112,13 +112,15 @@ pointer string_p;
 int max_string_length;
 
 
-void Init_str(pointer str_p, int len) {
+void Init_str_c(pointer str_p, int len) {
     string_p = str_p;
     max_string_length = len - 1; /* Substract leading byte. */
     string_p[0] = 0;
 } /* init_str */
 
-
+void Init_str(pointer str_p, int len) {
+    Init_str_c(str_p, len);
+} /* init_str */
 
 void Reuse_str(pointer str_p, int len) {
     /* Initialize, but do not cancel current contents. */
@@ -151,8 +153,9 @@ void Add_str_str(pointer str_p) {
         Add_str_char(*++str_p);
 } /* add_str_str */
 
-
-
+void Add_str_num_c(dword num, byte base) {
+    Add_str_str_c(Print_number(num, 0, base) + 1); // #TODO: remove + 1
+} /* add_str_num */
 
 void Add_str_num(dword num, byte base) {
     Add_str_str(Print_number(num, 0, base));
