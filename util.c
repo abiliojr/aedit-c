@@ -127,7 +127,10 @@ void Reuse_str(pointer str_p, int len) {
     max_string_length = len - 1; /* Substract leading byte. */
 } /* reuse_str */
 
-
+void Add_str_char_c(char ch) {
+    if (strlen(string_p) >= max_string_length) return;
+    strncat(string_p, &ch, 1);
+} /* add_str_char */
 
 void Add_str_char(byte ch) {
 
@@ -137,7 +140,10 @@ void Add_str_char(byte ch) {
 } /* add_str_char */
 
 
-
+void Add_str_str_c(char *str_p) {
+    int max_len = max_string_length - strlen(string_p);
+    strncat(string_p, str_p, max_len);
+} /* add_str_str */
 
 void Add_str_str(pointer str_p) {
 

@@ -938,7 +938,7 @@ void H_cmnd() {
             while (num_output != 0) {
                 len = Min(10, num_output);
                 Init_str(tmp_str, sizeof(tmp_str));
-                Add_str_str("\x6" " Hex: ");
+                Add_str_str_c("Hex: ");
                 for (i = 1; i <= len; i++, cursor++) {
                     ch = *cursor;
                     if (ch == LF) {
@@ -952,13 +952,13 @@ void H_cmnd() {
                             break;
                         }
                     }
-                    Add_str_char(' ');
-                    Add_str_char(hex_digits[ch >> 4]);
-                    Add_str_char(hex_digits[ch & 15]);
+                    Add_str_char_c(' ');
+                    Add_str_char_c(hex_digits[ch >> 4]);
+                    Add_str_char_c(hex_digits[ch & 15]);
                 }
                 //        exit_loop:
                 force_writing = _TRUE;
-                Print_message(ptoc(tmp_str));
+                Print_message(tmp_str);
                 force_writing = _FALSE;
                 num_output = num_output - len;
                 if (num_output != 0) {
