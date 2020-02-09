@@ -464,9 +464,9 @@ void Set_input_expected(byte ch) {
 
     if (batch_mode)
         ch = '-';
-    next_message[3] = next_message[4] = ch;
+    next_message[2] = next_message[3] = ch;
     /* spoil current message to force rewriting */
-    current_message[3] = current_message[4] = 'X';
+    current_message[2] = current_message[3] = 'X';
     input_expected_flag = (ch == '!');
     current_indicator = ch;
 
@@ -515,7 +515,7 @@ static void Put_indicator(byte ch) {
     Put_goto(old_col, old_row);
     Flush(); /* don't check$for$key because we are
                    at the middle of reading a _char */
-    next_message[3] = next_message[4] = ch;
+    next_message[2] = next_message[3] = ch;
     force_writing = save_force_writing;
 
     if (in_block_save == _TRUE) {
