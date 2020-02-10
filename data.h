@@ -134,7 +134,7 @@ extern file_t files[7];
 
 extern byte file_num;
 
-extern byte null_str;
+extern byte null_str[];
 
 extern boolean force_writing;
 

@@ -334,7 +334,7 @@ END OF COMMENT */
 
    byte co_buffer[255] = {0};
 
-   byte null_str = {0}; /* a null string */
+   byte null_str[] = "\0"; /* a null string */
 
    boolean force_writing = {_FALSE};
 
