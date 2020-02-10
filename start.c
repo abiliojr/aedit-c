@@ -1367,7 +1367,7 @@ static byte Keep_after_all() {
     byte ans;
 
     Rebuild_screen();
-    ans = Input_yes_no_from_console("\x11" "all changes lost?", _FALSE, _FALSE);
+    ans = Input_yes_no_from_console("all changes lost?", _FALSE, _FALSE);
     if (ans == CONTROLC)
         return _TRUE;
     return ~ans;

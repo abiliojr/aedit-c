@@ -146,7 +146,7 @@ void Fr_cmnd() {
             macro_exec_level = 0;
             Re_view();
             macro_exec_level = save_macro_level;
-            i = Input_yes_no_from_console("\xe" "ok to replace?", _FALSE, _TRUE);
+            i = Input_yes_no_from_console("ok to replace?", _FALSE, _TRUE);
             if (Have_controlc()) {
                 infinite = _FALSE;
                 count = 1;/* FORCE END */

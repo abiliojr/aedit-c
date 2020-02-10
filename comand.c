@@ -13,6 +13,7 @@
 #include "type.h"
 #include "data.h"
 #include "proc.h"
+#include "oscompat.h"
 
 static boolean At_crlf(pointer str_p, byte i, boolean left);
 
@@ -299,7 +300,7 @@ boolean wait_in_text = _FALSE;
    /* CONTROLC.                                                              */
    /*                                                                        */
    /**************************************************************************/
-byte Input_yes_no(pointer prompt, byte y_type) {
+byte Input_yes_no(char *prompt, byte y_type) {
     byte ch, i_row, i_col;
 
     /*BEGIN*/
@@ -307,15 +308,16 @@ byte Input_yes_no(pointer prompt, byte y_type) {
     i_col = col;
 
     /*    ADD THE REVERSE VIDEO BYTE    */
-    Init_str(tmp_str, sizeof(tmp_str));
-    Add_str_char(rvid);     /* NEED REVERSE VIDEO    */
+    Init_str_c(tmp_str, sizeof(tmp_str));
+    Add_str_char_c(rvid);     /* NEED REVERSE VIDEO    */
 
     if (macro_exec_level == 0) {
-        Add_str_str(prompt);
+        Add_str_str_c(prompt);
         if (y_type)
-            Add_str_str("\xc" " ([y] or n) ");
+            Add_str_str_c(" ([y] or n) ");
         else
-            Add_str_str("\xc" " (y or [n]) ");
+            Add_str_str_c(" (y or [n]) ");
+        ctop(tmp_str);
         Print_prompt(tmp_str);
         if (wait_in_text) Put_goto(i_col, i_row);        /* PUT CURSOR BACK */
         else Put_re_col(tmp_str[0]);/* MOVE CURSOR TO END OF LINE*/
@@ -340,7 +342,7 @@ byte Input_yes_no(pointer prompt, byte y_type) {
 /* Same as input_yes_no, but the answer is not taken from macro, and is   */
 /* not buffered.                                                          */
 /**************************************************************************/
-byte Input_yes_no_from_console(pointer prompt, byte y_type, boolean in_replace) {
+byte Input_yes_no_from_console(char* prompt, byte y_type, boolean in_replace) {
     byte save_macro_level;
     boolean save_macro_def;
     boolean save_force_writing;
