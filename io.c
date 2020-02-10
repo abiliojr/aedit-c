@@ -545,7 +545,7 @@ byte Ci() {
 
     Co_flush();                        /* CLEAR OUTPUT BUFFER */
 //re_read:
-    while (_TRUE) {
+    while (1) {
         if (cur_ci == valid_ci) {        /* type-ahead buffer empty */
             Input_expected(); /* print "input-expected" (-??-)  message */
             if (config != SIIIE && config != SIIIEO) {

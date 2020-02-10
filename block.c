@@ -265,7 +265,7 @@ void B_cmnd() {
     b_is_done = _FALSE;                    /* DIRTY FLAG TO SAY WHEN DONE */
 
     command = 0; /* don't allow an AGAIN as a first command. */
-    while (_TRUE) {
+    while (1) {
         if (command != 'A') last_cmd = command;
         command = Input_command("\x4f"
             RVID "Buffer    Delete    Find      -find    "

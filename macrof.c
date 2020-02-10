@@ -235,7 +235,7 @@ static void Process_macro_comment() {
 
     ch = 0;
     /* Scan for matching '*\' */
-    while (_TRUE) {
+    while (1) {
         ch2 = Macro_byte();
         if (ch == '*' && ch2 == '\\')
             return;

@@ -372,7 +372,7 @@ logical Find() {
            and the next delimiter. */
 
 //   forward_search:
-        while (_TRUE) {
+        while (1) {
             if (oa.high_e <= oa.high_s + target[0])
                 goto none_in_block;
 
@@ -401,7 +401,7 @@ logical Find() {
                     }
                     bytes_to_match = target[0];
                     i = 2;
-                    while (_TRUE) {
+                    while (1) {
                         if (--bytes_to_match == 0) {    /* matched! */
                             if (token_find == _TRUE) {
                                 /* see if the next char in memory is a delimiter */
@@ -446,7 +446,7 @@ logical Find() {
     else {    /* backward search */
         word bytes_to_match;
 //    backward_search:
-        while (_TRUE) {
+        while (1) {
             if (oa.low_e < target[0] + oa.low_s) goto none_in_back_block;
             match_char_p = oa.low_e - target[0];
             locs = (word)(match_char_p - oa.low_s + 1);
@@ -476,7 +476,7 @@ logical Find() {
                        on which the cursor is positioned, between the cursor
                        and the previous delimiter. */
 
-                    while (_TRUE) {
+                    while (1) {
                         if (--bytes_to_match == 0) { /*  matched! */
                             if (token_find == _TRUE) {
                                 /* check char after string in memory */
