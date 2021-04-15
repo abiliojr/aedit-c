@@ -84,7 +84,6 @@ byte Get_hexin(boolean *err_p);
 void Insert_long_config(pointer new_str_p, entry_t *entry_p);
 void VT100_setup();
 void ANSI_setup();
-void Ibm_pc_setup();
 void Reset_config();
 void Setup_terminal();
 void Check_minimal_codes_set();
@@ -128,7 +127,6 @@ void Co_flush();
 void Print_string(pointer string);
 void Print_update(byte cur_column, byte len, pointer string, boolean rev_vid);
 void Check_for_keys();
-void Set_cursor(byte new_val);
 byte Ci();
 void Echeck();
 void Echeck_no_file();
@@ -160,8 +158,6 @@ void Macro_file_error(pointer string);
 byte Macro_byte();
 static byte Macro_not_blank();
 boolean Add_macro_char(byte ch);
-// void Mark_param_start();
-// void Ignore_param();
 static byte Find_macro();
 byte Find_index(byte ch, pointer ch_list_p);
 void Macro_file_process();
@@ -176,7 +172,6 @@ void E_cmnd();
 void M_cmnd();
 
 /*****     SCREEN.PLM     *****/
-// byte Port_input(word port_num);
 void Put_home();
 void Put_left();
 void Put_erase_screen();
@@ -233,7 +228,6 @@ void Tmpman_init();
 
   /* initializes pointers for the 286 */
 
-//boolean Handle_aftn_full();
 void Reinit_temp(byte file_num);
 
 /*!
@@ -293,10 +287,6 @@ void Write_temp(byte file_num, pointer buf_addr);
 
 /*****     UTIL.PLM     *****/
 
-/*! _IF VAX 
-  time:PROCEDURE(x);
-    DCL x word; END;
-/*! _ENDIF  */
 #define Min(a,b) ((a) < (b) ? (a) : (b))
 #define Max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -350,19 +340,6 @@ pointer Unfold_to_screen(pointer line); /* IOCASM */
 /*****   XNXSYS.PLM   *****/
 char *Getenv(pointer symbol_p);
 
-/*!****   INFACE   *****/
-//address tgetstr_(pointer symbol_p);
-//address tgoto_(pointer scrstr_p, word col, word row);
-//word tgetent_(pointer buf_p, pointer name_p) word;
-//word tgetnum_(pointer name_p) word;
-//word tgetflag_(pointer name_p) word;
-//void ignore_quit_signal();
-//void handle_ioctl():
-
-/*!****   TRMCAP   *****/
-//void xenix_setup_terminal();
-//address  interpret_cursor: PROC (byte goto_col, byte goto_row) address;
-
 
 byte Cli_command();
 void Co(byte byt);
@@ -414,11 +391,6 @@ void dq_trap_cc(void (* cc_procedure_p)(), wpointer excepp);
 void dq_truncate(connection conn, wpointer excep_p);
 void dq_write(connection conn,pointer buf_p, word count, wpointer excep_p);
 
-/*! _IF VAX
-void dq_set_delimiters(pointer delimiter_p, wpointer excep_p);
-word dq_attach_first(pointer path, wpointer excep_p);
-word dq_create_crlf(pointer path, wpointer excep_p);
-/*! _ENDIF */
 
 #define length(var) (sizeof(var)/sizeof(*var))
 #define last(var)   (sizeof(var)/sizeof(*var) - 1)
@@ -442,207 +414,3 @@ word skipb(byte *str, byte ch, word cnt);
 word skiprb(byte *str, byte ch, word cnt);
 
 void move(byte cnt, pointer s, pointer t);
-
-
-#if 0       /* local procedures */
-static void Actual_goto(goto_col,goto_row);
-static void Add_ch(ch);
-static void Add_in_quot();
-static byte Add_input_buffer();
-static void Add_param();
-static void Add_three();
-static void Add_to_message(addstr);
-static void Add_two(two);
-static void Alias(cmd_index);
-static void Assign_to_message_is(newval);
-static boolean At_crlf(str_p, i, left);
-static boolean At_eof();
-static void B_cleanup();
-static void Back_char();
-static byte Bad_hex(code_p, max_num, in_place);
-static void Bad_value(p);
-static void Block_block();
-static void Block_controlc();
-static void Block_delete();
-static void Block_escape();
-static void Block_put();
-static pointer Build_ptr(token, offset);
-static void Calc_error(err_msg);
-static void Calc_statement();
-static byte Can_add_macro();
-static byte Char_subtype(ch);
-static byte Char_type(ch);
-static void Check();
-statis boolean Check_if_quoted_string();
-static void Check_stack_ovf();
-static void Chop_blanks();
-static void Close_block();
-static byte Cmp_dw(num1,num2);
-static byte Cmp_name_insensitively(fromp,top);
-static void Collect_count();
-static dword Collect_number();
-static void Conflict_error();
-static byte Control_type();
-static dword Convert(base);
-static byte Convert_if_cc(char);
-static dword Convert_number();
-static dword Convert_time_and_date(p);
-static void Convert_xenix_format();
-static void Copy_wk1_file(outfile);
-static void Copy_wk2_file(outfile);
-static byte Count_lines(fromp,top);
-static void Crlf_and_indent();
-static byte Cur_message_is();
-static void Dealias(alias_ptr,former_flag);
-static void Delay(func);
-static void Display_alias_exp(alias_name_ptr,alias_exp_ptr);
-static void Display_filenames();
-static void Do_config_termcap();
-static void Do_delete();
-static void Do_delete_left();
-static void Do_delete_line();
-static void Do_delete_right();
-static lvars Do_macro_file();
-static void Do_replace(need_save);
-static void Draw_first_at_sign(ch);
-static dword Element();
-static void Exchange_a_char(ch);
-static dword Exp();
-static dword Factor();
-static void Fill_chars();
-static boolean Find_bop();
-static lvars Flush();
-static void For_char();
-static void Free_block(blk_p);
-static void Get_arg();
-static pointer Get_block();
-static void Get_controls();
-static byte Get_entry(src_ptr,dest_ptr,max_bytes);
-static void Get_input_file_name();
-static size Get_next_alias_param(alias_exp_ptr,prev_index);
-static dword Get_offset(block_num,offset_in_block);
-static address Get_quoted_string();
-static word Get_string_variable(byte ch);
-static void Init_alias_table(output_conn_in,co_conn_in,echo_in,excep_ptr);
-static void Input_expected();
-static byte Input_l(prompt_p,prev_string_p);
-static byte Input_macro_name();
-static void Input_param();
-static void Insert_blank();
-static void Insert_char(ch);
-static void Insert_string(str);
-static void Invocation_error();
-static boolean Is_a_system_variable();
-static boolean Is_assign();
-static boolean Is_open(i);
-static void Jump_end();
-static void Jump_prior_boln();
-static byte Keep_after_all();
-static byte Keep_other_after_all();
-static void Last_dispatch();
-static void Link_to_end(file_num, blk_p);
-static void Link_to_lru(blk_p);
-static void List_tabs();
-static dword Logicalops();
-static byte Macro_char();
-static void Macro_create();
-static void Macro_get();
-static void Macro_insert();
-static void Macro_list();
-static void Macro_null();
-static word Macro_number();
-static void Macro_save();
-static void Move_cursor(ch);
-static dword N_stat_in_parens();
-static dword N_statement();
-static byte Not_coded(ch);
-static byte Not_equal();
-static byte Not_semi_colon();
-static boolean Null_line();
-static byte On_screen();
-static void Open_block(mode);
-static void Open_if_necessary(file_num);
-static void Parse_tail();
-static dword Primary();
-static void Print_code(code_p);
-static void Print_counters();
-static void Print_name(name_p);
-static void Process_macro_comment();
-static logical Process_line(start_col);
-static void Process_t_or_f(flag_p,err_p);
-static void Put_back();
-static void Put_delete();
-static void Put_down();
-static void Put_indicator(ch);
-static void Put_insert();
-static void Put_re_row(new_row,want_col);
-static void Put_right();
-static void Put_up();
-static void Q_cleanup();
-static void Read_input_file();
-static byte Real_pos();
-static dword Relops();
-static void Remove_slash();
-static void Rename_as_bak();
-static void Restore_state();
-static boolean Reverse_scroll(num_line);
-static word S_statement();
-static void Save_state();
-static byte Saved_in_block();
-static void Scan();
-static boolean Scroll(num_line);
-static void Scroll_partial_down(insert_row,num);
-static void Scroll_partial_up(num);
-static void Select_partition(part_no);
-static word Selecter_of(ptr);
-static void Send_alias_command(conn_tok,buff_ptr,cmd_excep_ptr,excep_ptr);
-static void Set_autocr();
-static void Set_bak_file();
-static void Set_case();
-static void Set_display();
-static void Set_e_delimit();
-static void Set_error(msg);
-static void Set_go();
-static void Set_highbit();
-static void Set_indent();
-static byte Set_input_line(prompt,prev_input);
-static void Set_input_yes_no(prompt_string,current_value_p);
-static void Set_k_token();
-static void Set_leftcol();
-static void Set_margin();
-static void Set_notab();
-static void Set_pause();
-static void Set_radix();
-static void Set_showfind();
-static void Set_tabs();
-static void Set_viewrow();
-static void Set_wrapcol();
-static void Set_zone();
-static void Setup_memory();
-static byte Smaller(a,b);
-static dword Srops();
-static lvars Start_error(msg);
-static void Switch_windows();
-static void System_call();
-static dword System_variable();
-static dword Term();
-static void Text_lost();
-static void U_restore();
-static void U_save();
-static void U_setup();
-static void Ubuf_char(ch);
-static pointer Unlink_from_end(file_num);
-static void Unlink_from_lru(blk_p);
-static void Unlink_from_start(file_num);
-static void Update();
-static void V1_cmnd();
-static void Wrap_macro();
-static void Write_entire_file(nfile);
-static void Write_to_tagi(nfile,do_delete);
-static void Write_wk1();
-static void Write_wk2(start);
-static void Xbuf_clean();
-static void Xx_controlc();
-static void Xx_rubout();
-#endif
-

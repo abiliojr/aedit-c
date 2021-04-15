@@ -257,59 +257,6 @@ static void Unlink_from_lru(block_t *blk_p) {
 /****************************************************/
 
 
-#if 0
-nestedProc boolean Is_open(byte i, byte *file_num) {
-
-    if (virtual_files[i].status == opened_stat) {
-        *file_num = i;
-        return TRUE;
-    }
-    return FALSE;
-} /* is_open */
-
-boolean Handle_aftn_full() {
-    /**********************************************************************
-      Called when an attempt is done to open more than six files at the
-      same time. Decides which work file to close temporarily according
-      to a simple precedence. Closing this file allows openning the new one.
-      The temporary closing requires that open_if_necessary will be called
-      before each operation with physical workfiles.
-    **********************************************************************/
-
-    byte file_num;
-    vf_struc_t *vf_base;
-
-
-
-
-    if (excep != E_SIX && excep != E_MEM)
-        return FALSE; /* false - don't retry to open */
-    if (!in_other) {
-        /* in main; first try in other. */
-        if (!Is_open(3, &file_num) /* wk2 of other */ &&
-            !Is_open(2, &file_num) /* wk1 of other */ &&
-            !Is_open(1, &file_num) /* wk2 of main  */ &&
-            !Is_open(0, &file_num))   /* wk1 of main  */
-            return FALSE;
-    }
-    else {
-        /* in other; first try in main. */
-        if (!Is_open(1, &file_num) /* wk2 of main  */ &&
-            !Is_open(0, &file_num) /* wk1 of main  */ &&
-            !Is_open(3, &file_num) /* wk2 of other */ &&
-            !Is_open(2, &file_num))   /* wk1 of other */
-            return FALSE;
-    }
-    vf_base = &virtual_files[file_num];
-    dq_close(vf_base->conn, &excep);
-    Echeck();
-    vf_base->status = attached_stat;
-    return TRUE;
-
-} /* handle_aftn_full */
-
-#endif
-
 
 static void Open_if_necessary(byte file_num) {
     /**********************************************************************

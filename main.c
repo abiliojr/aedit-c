@@ -56,7 +56,7 @@ bool EnableVTMode()
     return true;
 }
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
     int len = 0;
 
     for (int i = 0; i < argc; i++)      // work out length of command line
@@ -78,6 +78,7 @@ void main(int argc, char **argv) {
     }
 
     Aedit();
+    return 0;
 }
 
 word findb(byte *str, byte ch, word cnt) {

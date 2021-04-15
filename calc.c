@@ -1123,19 +1123,8 @@ static dword Factor() {
     }
     else sign = _FALSE;
     val = 1;
-#if 0
-    word i, j;
-    // PMO: this code appears to be faulty. Works ok if num2 <= 0xffff or num1 == 1
-    // but as overflow will occur for num1 > 1 with num2 > 31 it is not really a big issue
-    // can fail with num1 = 0 if num2 != 0 && num2 % 0x10000 == 0
-    for (j = 0; j <= highw(num2); j++) { /* Instead of HIGH(num2) due to PLM/VAX bug. */
-        for (i = 1; i <= loww(num2); i++)
-            val = val * num1;
-    }
-#else
     while (num2-- > 0)
         val *= num1;
-#endif
     if (sign)
         val = ~val + 1; // -val
     return val;

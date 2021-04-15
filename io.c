@@ -400,27 +400,6 @@ void Check_for_keys() {
 
 
 
-  /* SET_CURSOR - set the cursor using the parameter byte specified */
-
-
-#define cursor_type_offset	0x75
-
-byte set_string[] = { 4, 0x1b, 'X', cursor_type_offset, 0 };
-
-void Set_cursor(byte new_val) {
-
-#define flag_start	0x5a80
-
-    return;    /* protection */
-} /* set_cursor */
-
-
-
-
-
-
-
-
 /****************************************************************************
     The following  three PROCs  are used  to indicate  the state  of the
 editor.  When  the editor waits for  input from the keyboard  (i.e.  the type
