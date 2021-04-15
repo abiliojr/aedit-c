@@ -306,15 +306,15 @@ void Handle_controlc() {
 void Check_for_keys() {
     byte ch, _char, numin, nx_ch;
 
-    if (batch_mode == _TRUE)
+    if (batch_mode)
         return;
 
-    if (in_block_mode == _TRUE) {
+    if (in_block_mode) {
         Codat(0xff);
         in_block_mode = _FALSE;
     }
 
-    if (submit_mode == _TRUE)
+    if (submit_mode)
         return;
 
     if (do_type_ahead != _TRUE /* !!! */) {
@@ -336,7 +336,7 @@ void Check_for_keys() {
     }
 
     //    get_next_character:
-    while (1) {
+    for (;;) {
         if (quit_state == 3)
             return;    /* read in nothing */
 
@@ -473,7 +473,7 @@ static void Put_indicator(byte ch) {
         return;
 
     in_block_save = in_block_mode;
-    if (in_block_mode == _TRUE) {
+    if (in_block_mode) {
         /* cursor addressing is meaningless in block mode.
            close block mode temporarily. */
         Flush();
@@ -494,7 +494,7 @@ static void Put_indicator(byte ch) {
     next_message[3] = next_message[4] = ch;
     force_writing = save_force_writing;
 
-    if (in_block_save == _TRUE) {
+    if (in_block_save) {
         /* restore previous mode */
         Cocom(0x2f);
         in_block_mode = _TRUE;
@@ -521,10 +521,10 @@ byte Ci() {
 
     Co_flush();                        /* CLEAR OUTPUT BUFFER */
 //re_read:
-    while (_TRUE) {
+    for (;;) {
         if (cur_ci == valid_ci) {        /* type-ahead buffer empty */
             Input_expected(); /* print "input-expected" (-??-)  message */
-            if (poll_mode && batch_mode == _FALSE) {
+            if (poll_mode && !batch_mode) {
                 set_ci_mode(1);     // transparent non polling
                 poll_mode = _FALSE;
             }
@@ -939,7 +939,7 @@ static void Expand_window() {
 
         Movmem(oa.high_s, oa.high_s + oa.block_size, (word)(limit - oa.high_s));
         oa.high_s = oa.high_s + oa.block_size;
-        if (oa.wk2_blocks == 0 && oa.more_input == _FALSE) Add_eof();
+        if (oa.wk2_blocks == 0 && !oa.more_input) Add_eof();
     }
 
     if (in_other != w_in_other) {
@@ -1104,7 +1104,7 @@ byte Forward_file() {
                 }
             }
             oa.wk2_blocks = oa.wk2_blocks - 1;        /* ADJUST WK1 BLOCK COUNT */
-            if (oa.wk2_blocks == 0 && oa.more_input == _FALSE) {
+            if (oa.wk2_blocks == 0 && !oa.more_input) {
                 Add_eof();                /* NEED | ADDED AT END OF FILE */
                 Clean_tags();            /* TAG AT EOF MUST MOVE FROM
                                                 LOW_E TO HIGH_S */
@@ -1283,7 +1283,7 @@ void Read_util_file() {
     /*    PROBABLY NOT COMMON */
 
     Set_tagi_at_lowe();
-    while (count > 0 && cc_flag == _FALSE) {
+    while (count > 0 && !cc_flag) {
         Rewind(util_file);
         if (excep != 0) return;
         numin = oa.block_size;
@@ -1317,7 +1317,7 @@ void Read_block_file() {
         HAVE LEFT OVER JUNK IN IT    */
 
     Set_tagi_at_lowe();
-    while (count > 0 && cc_flag == _FALSE) {
+    while (count > 0 && !cc_flag) {
         Open_block(input_mode);
         if (excep != 0)
             return;

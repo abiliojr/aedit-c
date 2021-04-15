@@ -83,7 +83,7 @@ pointer Unfold(pointer textp, pointer image_p) {
         image_p[0] = 0;
 
         /*      search_for_lf: */
-        while (1) {
+        for (;;) {
             textp += findb(textp, LF, wrapping_column - 1);
             if (textp == oa.low_e) {
                 textp = oa.high_s;
@@ -117,7 +117,7 @@ pointer Unfold(pointer textp, pointer image_p) {
     }
 
     /* unfold_loop: */
-    while (1) {
+    for (;;) {
         ch = Printable(*textp++);
         if (ch != TAB && ch != LF) {
             if (++actual_col == wrapping_column)

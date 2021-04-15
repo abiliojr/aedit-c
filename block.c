@@ -98,7 +98,7 @@ static void Block_delete() {
 
     delete_down = oa.tblock[ed_tagi] == oa.wk1_blocks && oa.toff[ed_tagi].bp < oa.high_s;
 
-    if (Saved_in_block() == _FALSE) {
+    if (!Saved_in_block()) {
         Rebuild_screen();      /* BRING BACK DISPLAY IF SUPPRESSED */
         ch = Input_yes_no_from_console("cannot save in memory - save anyway?", _TRUE, _FALSE);
         if (Have_controlc()) {
@@ -130,7 +130,7 @@ static void Block_delete() {
 
 static void Block_block() {
 
-    if (Saved_in_block() == _FALSE) {
+    if (!Saved_in_block()) {
         in_block_buffer = 0xffff;    /* FLAG FOR TEXT IN BLOCK FILE */
         Write_block_file(_FALSE);
     }
@@ -146,7 +146,7 @@ static void Block_block() {
 static void Block_put() {
 
     //redo:
-    while (1) {
+    for (;;) {
         if (Input_filename("\xd" "Output file: ", s_put_file) == CONTROLC)
             Jump_tagi();
         else if (input_buffer[0] == 0)
@@ -262,7 +262,7 @@ void B_cmnd() {
     b_is_done = _FALSE;                    /* DIRTY FLAG TO SAY WHEN DONE */
 
     command = 0; /* don't allow an AGAIN as a first command. */
-    while (_TRUE) {
+    for (;;) {
         if (command != 'A') last_cmd = command;
         command = Input_command("\x4f"
             RVID "Buffer    Delete    Find      -find    "
@@ -275,12 +275,12 @@ void B_cmnd() {
                and not on dead_blank */
             Text_co('@');
 
-        if (Move_cmnd(command) == _FALSE) {        /* DO A MOVE */
+        if (!Move_cmnd(command)) {        /* DO A MOVE */
 
             if ((command == 'D') && oa.file_disposition == view_only)
                 command = 0; /* illegal command */
 
-            if (Dispatched(command, b_dispatch) == _FALSE) {
+            if (!Dispatched(command, b_dispatch)) {
                 if (command == macro_exec_code)
                     Handle_macro_exec_code();
                 else if (!Single_char_macro(command))
@@ -345,7 +345,7 @@ void G_cmnd() {
             Put_insert_line(i);
         }
 
-        while (count > 0 && cc_flag == _FALSE) {
+        while (count > 0 && !cc_flag) {
             Check_window(in_block_buffer);
             oa.high_s = oa.high_s - in_block_buffer;
             memcpy(oa.high_s, block_buffer, in_block_buffer);

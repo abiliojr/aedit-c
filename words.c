@@ -53,7 +53,7 @@ static void Jump_prior_boln() {
         pointer ptr;
         word len;
 
-    while (1) {
+    for (;;) {
         len = (word)(oa.low_e - oa.low_s + 10); /* length of memory to be scanned */
         ptr = oa.low_e - len;
         cursor = ptr + findrb(ptr, LF, len) + 1;
@@ -88,7 +88,7 @@ static boolean Null_line() {
         pointer p;
 
     Set_tag(ed_tagb, oa.high_s);    /* save current location */
-    while (1) {
+    for (;;) {
         ch = high_s_byte;
         if (ch == ' ') {
             For_char();
@@ -132,7 +132,7 @@ static boolean Find_bop() {
             return _FALSE;
         }
     }
-    while (1) {
+    for (;;) {
         Jump_prior_boln();
         if (oa.low_e <= oa.low_s)
             return _TRUE;  /* start-of-file is same as start-of-parag. */

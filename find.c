@@ -165,7 +165,7 @@ void Fr_cmnd() {
         }
 
     }
-    else if (count != 1 && show_find  && minus_type == _FALSE) {
+    else if (count != 1 && show_find  && !minus_type) {
 
         /* THE FOLLOWING WILL LIST ALL LINES THAT ARE FOUND */
         /* AFTER THE SUBSTITUTIONS (IF ANY) HAVE BEEN MADE */
@@ -332,7 +332,7 @@ logical Find() {
     /* IF control-c was pressed or null target, abort search, return
        not found
     */
-    if (cc_flag == _TRUE || target[0] == 0) {
+    if (cc_flag || target[0] == 0) {
         Stop_macro();
         return _FALSE;
     }
@@ -371,7 +371,7 @@ logical Find() {
            and the next delimiter. */
 
 //   forward_search:
-        while (_TRUE) {
+        for (;;) {
             if (oa.high_e <= oa.high_s + target[0])
                 goto none_in_block;
 
@@ -390,7 +390,7 @@ logical Find() {
                 if (*match_char_p == target[1] || *match_char_p == other_target[1]) {
                     old_p = match_char_p;
                     match_char_p++;
-                    if (token_find == _TRUE) {
+                    if (token_find) {
                         if (delimiters[previous_ch] == 0) {
                             previous_ch = *old_p;    /* save p_ch for next
                                                             iteration */
@@ -400,9 +400,9 @@ logical Find() {
                     }
                     bytes_to_match = target[0];
                     i = 2;
-                    while (_TRUE) {
+                    for (;;) {
                         if (--bytes_to_match == 0) {    /* matched! */
-                            if (token_find == _TRUE) {
+                            if (token_find) {
                                 /* see if the next char in memory is a delimiter */
                                 /* *match_char_p is already pointing at the next char */
                                 if (delimiters[*match_char_p] == 0 &&
@@ -436,7 +436,7 @@ logical Find() {
             /* see if we have another block */
             /* first test for control-c */
             Check_for_keys();
-            if (cc_flag == _TRUE || Forward_file() == _FALSE || cc_flag == _TRUE)
+            if (cc_flag || !Forward_file() || cc_flag)
                 break;
             cursor = oa.low_e - target[0];
             Re_window();
@@ -445,7 +445,7 @@ logical Find() {
     else {    /* backward search */
         word bytes_to_match;
 //    backward_search:
-        while (_TRUE) {
+        for (;;) {
             if (oa.low_e < target[0] + oa.low_s) goto none_in_back_block;
             match_char_p = oa.low_e - target[0];
             locs = (word)(match_char_p - oa.low_s + 1);
@@ -460,7 +460,7 @@ logical Find() {
                 if (*match_char_p == target[1] || *match_char_p == other_target[1]) {
                     old_p = match_char_p;
                     match_char_p++;
-                    if (token_find == _TRUE) {
+                    if (token_find) {
                         /* check char before string in memory */
                         if (delimiters[old_p[-1]] == 0) {
                             match_char_p = old_p - 1;
@@ -475,9 +475,9 @@ logical Find() {
                        on which the cursor is positioned, between the cursor
                        and the previous delimiter. */
 
-                    while (_TRUE) {
+                    for (;;) {
                         if (--bytes_to_match == 0) { /*  matched! */
-                            if (token_find == _TRUE) {
+                            if (token_find) {
                                 /* check char after string in memory */
                                 /* *match_char_p is already pointing to the next character */
                                 if (delimiters[*match_char_p] == 0) {
@@ -507,7 +507,7 @@ logical Find() {
             /* see if we have another block */
             /* first test for control-c */
             Check_for_keys();
-            if (cc_flag == _TRUE || Backup_file() == 0 || cc_flag == _TRUE)
+            if (cc_flag || Backup_file() == 0)
                 break;
             cursor = oa.high_s + target[0] - 1;
             Re_window();

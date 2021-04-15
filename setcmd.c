@@ -449,7 +449,7 @@ static void Set_radix() {
            "Alpha  "
     };
 
-    while (1) {
+    for (;;) {
         if (set_from_macrofile) {
             ch = Macro_not_blank();
         }
@@ -495,7 +495,7 @@ static void List_tabs() {
 
     byte i, j, dif, lasttab, skipped_i;
 
-    if (set_from_macrofile == _FALSE) {
+    if (!set_from_macrofile) {
         skipped_i = dif = lasttab = 0;
         for (i = 0; i <= last(tab_to); i++) {          /* RECONSTRUCT TABS FROM LASTTAB */
             j = tab_to[i] + i;                /* DESTINATION OF TAB    */
@@ -638,7 +638,7 @@ void S_cmnd() {
     byte ch, set_prompt_number;
 
     set_prompt_number = 0;
-    while (1) {
+    for (;;) {
         if (set_from_macrofile) {
             ch = Macro_not_blank();
         }

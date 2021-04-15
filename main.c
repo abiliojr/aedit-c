@@ -340,7 +340,7 @@ word ci_read(byte *buf) {
     static char *escSeq = "";
     static char escCode[5];
 
-    while (1) {
+    for (;;) {
         if (*escSeq) {
             *buf = *escSeq++;
             return 1;

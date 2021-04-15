@@ -66,7 +66,7 @@ boolean explicit_macro_file = { _FALSE };
 /**************************************************************************/
 void Add_eof() {
 
-    if (oa.have_eof == _FALSE) {
+    if (!oa.have_eof) {
         oa.have_eof = _TRUE;
         *oa.high_e++ = '|';
         *oa.high_e = LF;
@@ -114,12 +114,12 @@ logical first_time = { _TRUE };
 void Build_banner() {
     Init_str(tmp_str, sizeof(tmp_str));
     dq_get_system_id(tmp_str, &excep);
-    if (first_time == _FALSE) {
+    if (!first_time) {
         Add_str_char(' ');
     }
     Add_str_str(title);
     Add_str_str(version);
-    if (first_time == _TRUE) {
+    if (first_time) {
         Add_str_str(copy_right);
         first_time = _FALSE;
     }
@@ -273,7 +273,7 @@ static void Read_input_file() {
             oa.new_file = _FALSE;
             oa.more_input = _TRUE;
             Subtract_eof();
-            if (recovery_mode == _FALSE) {    /* read in the input file */
+            if (!recovery_mode) {    /* read in the input file */
                 while (oa.more_input &&
                     (word)(oa.high_s - oa.low_e) > (word)(oa.block_size + window_minimum)) {
                     if ((numin = Read(in_file)) != oa.block_size) {
@@ -303,7 +303,7 @@ static void Read_input_file() {
     if (oa.file_disposition == lose_file)
         oa.block_size = Min(block_size, 1024);
 
-    if (recovery_mode == _TRUE) {
+    if (recovery_mode) {
         recovery_mode = _FALSE;
         oa.high_e = oa.high_e - 2;
         oa.have_eof = _FALSE;
@@ -678,7 +678,7 @@ static void Get_controls() {
     byte i;
     byte ch;
     dword num;
-    while (1) {
+    for (;;) {
         if ((arg_type != ctl_mr) && (arg_type != ctl_nomr) &&
             (arg_type != ctl_db) && (arg_type != ctl_bf) &&
             (arg_type != ctl_ba) && (arg_type != ctl_noba)
@@ -1163,7 +1163,7 @@ static void Rename_as_bak() {
     Move_name(oa.input_name, oa.output_name);
     dq_change_extension(oa.output_name, "bak", &excep);
     Echeck();
-    if (Cmp_name(oa.input_name, oa.output_name) == _FALSE) {
+    if (!Cmp_name(oa.input_name, oa.output_name)) {
         file_num = in_file;
         Working();
         dq_delete(oa.output_name, &excep);
@@ -1382,7 +1382,7 @@ static byte Keep_after_all() {
 /**************************************************************************/
 static byte Keep_other_after_all() {
 
-    if (first_o_command == _FALSE) {
+    if (!first_o_command) {
         Flip_pointers();        /* EXCHANGE THE BUFFER SPECIFIC INFO. */
         if (oa.dirty && oa.file_disposition != lost_file) {
             Display_filenames();
@@ -1479,7 +1479,7 @@ void Q_cmnd() {
     /*    PROMPT FOR SUB COMMAND. NEED DO FOREVER BECAUSE WRITE AND UPDATE
         STAY IN QUIT MODE    */
 
-    while (1) {
+    for (;;) {
 
         /*    LAST_CMD TELLS INPUT COMMAND THAT THE QUIT COMMAND IS IN PROGRESS
             AND THE MESSAGE LINE SHOULD BE LEFT INTACT    */
@@ -1552,7 +1552,7 @@ void Q_cmnd() {
                 nfile = in_file;
                 Add_str_str(oa.input_name);
                 Print_name(tmp_str);
-                if (oa.new_file == _FALSE) {
+                if (!oa.new_file) {
                     if (backup_files) {
                         /* THE BACKUP_FILES FLAG SAYS WHETHER
                            OR NOT A .BAK FILE IS NEEDED    */

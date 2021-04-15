@@ -239,7 +239,7 @@ static void Process_macro_comment() {
 
     ch = 0;
     /* Scan for matching '*\' */
-    while (_TRUE) {
+    for (;;) {
         ch2 = Macro_byte();
         if (ch == '*' && ch2 == '\\')
             return;
@@ -421,7 +421,7 @@ static byte Bad_hex(pointer code_p,     // destination of hex string
     byte ch;
     byte i, j;
 
-    if (Not_equal() == _FALSE) {    /* NEED = FIRST    */
+    if (!Not_equal()) {    /* NEED = FIRST    */
         str[0] = 0;            /* ACCUMULATE CHARACTERS IN str */
         while (Hex_value(ch = Macro_not_blank()) != not_hex && str[0] < 80) {
             str[++str[0]] = Hex_value(ch);
@@ -665,7 +665,7 @@ void Macro_file_process() {
 
 next_macro_line:
 
-    while (1) {
+    for (;;) {
         ch = Macro_not_blank();
         if (macro_fail)
             return;
@@ -884,7 +884,7 @@ next_macro_line:
 
         case 'S':   /* Case 'S' */
                 /*    SET COMMANDS    */
-            if (Set_from_macro() == _FALSE)
+            if (!Set_from_macro())
                 ;
                 break;
 
@@ -1367,7 +1367,7 @@ static void Macro_insert() {
     byte ch;
 
     Set_dirty();
-    while (1) {
+    for (;;) {
         Print_prompt_and_repos("\x12" RVID "Control C to stop");
         if ((ch = Cmd_ci()) == CONTROLC)
             return;
@@ -1453,7 +1453,7 @@ static void Macro_save() {
             index = 0;
             end_type = 0;
 
-            while (index < temp->text_length && cc_flag == _FALSE) {
+            while (index < temp->text_length && !cc_flag) {
                 ch = temp->text[index];
                 if (ch == CR) {
                     dont_double_backslash = _TRUE;
@@ -1522,7 +1522,7 @@ void M_cmnd() {
 
     }
     else {
-        while (1) {
+        for (;;) {
             ch = Input_command("\x4f"
                 RVID "Create    Get       Insert    List     "
                 RVID "Save                                  ");

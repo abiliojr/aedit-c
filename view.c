@@ -63,7 +63,7 @@ void Movmem(pointer from_word, pointer to_word, word len) {
         dh = window.message_line;
 
     // update_screen_pointers:
-    while (1) {
+    for (;;) {
         if (dl <= dh) {
             if (have[dl] < from_word) {
                 dl++;
@@ -265,7 +265,7 @@ void Rebuild(byte r_row, pointer newp, pointer oldp) {
 */
 void Save_line(byte s_row) {
 
-    if (psaved_line == _TRUE)
+    if (psaved_line)
         return;
 
     saved_row = s_row;
@@ -424,13 +424,13 @@ void Backup_char(word num_chars, byte delete_flag) {
                     num_chars++;
                     i = Backup_file();
                 } else {                    /* AT START OF THE FILE */
-                    if (delete_flag == _FALSE)
+                    if (!delete_flag)
                         Re_window();
                     Stop_macro();
                     return;
                 }
             } else if (delete_flag) {
-                if (two_rows == _TRUE && saved_row > first_text_line + 1)
+                if (two_rows && saved_row > first_text_line + 1)
                     Save_line(saved_row - 2);
                 else if (saved_row > first_text_line)
                     Save_line(saved_row - 1);
@@ -493,11 +493,11 @@ pointer Backup_line(int num_lines, pointer start, byte do_move) {
         start = Prior_line(start);
     }
 
-    while (1) {
+    for (;;) {
         if (start == patch)
             start = oa.low_e;
         else if (start < oa.low_s) {    /* RAN OUT OF TEXT */
-            if (do_move == _FALSE)  /* NEED TO REMEMBER CURRENT LOCATION */
+            if (!do_move)  /* NEED TO REMEMBER CURRENT LOCATION */
                 Set_tag(ed_tagb, oa.high_s);
             if (!Backup_file()) {/* AND CANNOT BACKUP */
                 if (do_move && num_lines != 0)
@@ -506,7 +506,7 @@ pointer Backup_line(int num_lines, pointer start, byte do_move) {
                 break;;
             } else {
                 start = oa.low_e;
-                if (do_move == _FALSE)        /* IF NOT MOVING THEN PRESERVE
+                if (!do_move)                /* IF NOT MOVING THEN PRESERVE
                                                 THE CURSOR LOCATION */
                     Jump_tag(ed_tagb);
             }
@@ -769,7 +769,7 @@ void Re_view() {
             i = Count_lines(oa.high_s, have[first_text_line]);
             /* SEE IF IN RANGE FOR SCROLL. DONT BOTHER IF IN A MACRO */
             if (i > 0 && i < message_line - first_text_line
-                && (In_macro_exec() == _FALSE || dont_stop_macro_output)) {
+                && (!In_macro_exec() || dont_stop_macro_output)) {
 
                 /* if we can scroll, we are done */
 
@@ -783,9 +783,9 @@ void Re_view() {
             else
                 i = Count_lines(have[message_line], oa.low_e) + 1;
             /* DO NOT SCROLL IF IN MACRO */
-            if (i < prompt_line - first_text_line && (In_macro_exec() == _FALSE
+            if (i < prompt_line - first_text_line && (!In_macro_exec()
                                                       || dont_stop_macro_output)) {
-                if (saved_line == _TRUE) {
+                if (saved_line) {
                     /* first re_write what we have
                        on screen, then do the scrolling */
                     Re_write(have[first_text_line]);
@@ -811,7 +811,7 @@ void Re_view() {
            /* IF IN MACRO AND HAVE FALLEN OFF OF THE SCREEN, SUPPRESS
            SUBSEQUENT OUTPUT UNTIL ALL MACROS ARE DONE */
 
-        if (In_macro_exec() && dont_stop_macro_output == _FALSE) {
+        if (In_macro_exec() && !dont_stop_macro_output) {
             Co_flush();
             macro_suppress = _TRUE;
         }

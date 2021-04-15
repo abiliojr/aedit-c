@@ -200,7 +200,7 @@ word Num_in(boolean *err_p) {
         return 0;
     }
     num = 0;
-    while (1) {
+    for (;;) {
         ch = *scan_p - '0';
         if (ch < 0 || ch > 9)
             return num;

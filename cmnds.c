@@ -891,7 +891,7 @@ void H_cmnd() {
     word num_output;
 
 //h_process:
-    while (true) {
+    for (;;) {
         num_output = count;
         if (infinite)
             num_output = 65535;
@@ -1104,7 +1104,7 @@ void I_cmnd() {
                 }
                 else {                        /* HAVE A REAL INSERT */
                  /* PUT EXTRA LF BACK IF NECESSARY */
-                    if (want_slash && have_slash == _FALSE) {
+                    if (want_slash && !have_slash) {
                         have_slash = _TRUE;
                         oa.high_s--;
                         high_s_byte = LF;
@@ -1193,7 +1193,7 @@ void J_cmnd() {
     boolean err;
 
     //  redo:
-    while (1) {
+    for (;;) {
         ch = Input_command("\x4f" RVID  "A_tag     B_tag     C_tag     D_tag    "
             RVID  "Start     End       Line      Position");
 
@@ -1253,7 +1253,7 @@ void T_cmnd() {
     byte ch;
 
     //redo:
-    while (1) {
+    for (;;) {
         ch = Input_command("\x4f" RVID "A_tag     B_tag     C_tag     D_tag    "
             RVID "                                      ");
         if (ch >= 'A' && ch <= 'D') {
@@ -1394,7 +1394,7 @@ void X_cmnd() {
                 }
             }
             else {
-                if (Dispatched(ch, x_dispatch) == _FALSE) /* SPECIAL CASES */
+                if (!Dispatched(ch, x_dispatch)) /* SPECIAL CASES */
                     if (Is_illegal(ch)) {
                         /* check for control-key macros (since it can't be an xch char) */
                         if (!Single_char_macro(ch))

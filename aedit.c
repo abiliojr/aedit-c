@@ -171,7 +171,7 @@ void Aedit() {
     Alter_init();
     /* aedit_entry: */
     setjmp(aedit_entry); /* jumping here after calc errors, or tmpman errors, to clean the stack */
-    while (1) {
+    for (;;) {
         /* LOOPS FOREVER && DISPATCHES ON ANY CHARACTER TYPED */
         if (Have_controlc())
             cc_flag = _FALSE;
@@ -204,10 +204,10 @@ void Aedit() {
             if (findb(forbidden_in_viewonly, command, sizeof(forbidden_in_viewonly)) != 0xffff)
                 command = 0; /* Illegal command */
 
-        if (Move_cmnd(command) == _FALSE) { /* DO A MOVE CURSOR COMMAND */
+        if (!Move_cmnd(command)) { /* DO A MOVE CURSOR COMMAND */
             /* DONT BOTHER WITH MESSAGE OR DISPATCHING IF USER HITS ESCAPE OR CC */
             if (command != CONTROLC && command != esc_code)
-                if (Dispatched(command, cmnd_dispatch) == _FALSE)
+                if (!Dispatched(command, cmnd_dispatch))
                     if (command == macro_exec_code)
                         Handle_macro_exec_code();
                     else if (!Single_char_macro(command))

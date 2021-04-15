@@ -107,7 +107,7 @@ start_over:
         return CONTROLC;
     matched.length = 0;
     ibase = (match_t *)input_codes;
-    while (true) {
+    for (;;) {
         /* assign the character read in to the matching string */
         matched.code[++matched.length] = ch;
 
@@ -718,7 +718,7 @@ static void Collect_count() {
         old_row = row;
         old_col = col;
 
-        while (1) {
+        for (;;) {
             if (command == CONTROLC || command == esc_code)
                 break;
             if ((input_buffer[1] == '/') && (input_buffer[0] != 0)) {
@@ -954,7 +954,7 @@ static byte Input_l(pointer prompt_p, pointer prev_string_p) {
     edit_stat.last_cursor_key = 0; /* 0 = undefined */
     in_input_line = _TRUE;
 
-    while (1) {
+    for (;;) {
         Print_input_line();
         ch = Add_input_buffer();
         if (ch == CONTROLC) {
